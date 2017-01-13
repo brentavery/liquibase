@@ -5,7 +5,10 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.diff.DiffResult;
 import liquibase.diff.compare.CompareControl;
+import liquibase.diff.output.DiffOutputControl;
+import liquibase.diff.output.StandardObjectChangeFilter;
 import liquibase.exception.LiquibaseException;
+import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.integration.ant.type.DatabaseType;
 import liquibase.snapshot.DatabaseSnapshot;
 import liquibase.snapshot.SnapshotControl;
@@ -15,6 +18,11 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Reference;
 
 public abstract class AbstractDatabaseDiffTask extends BaseLiquibaseTask {
+    protected boolean includeSchema = true;
+    protected boolean includeCatalog = true;
+    protected boolean includeTablespace = true;
+    protected String includeObjects;
+    protected String excludeObjects;
     private DatabaseType referenceDatabaseType;
     private String diffTypes;
 
@@ -169,5 +177,61 @@ public abstract class AbstractDatabaseDiffTask extends BaseLiquibaseTask {
     @Deprecated
     public void setDataDir(String dataDir) {
         log("The dataDir attribute is deprecated. It is no longer needed and will be removed in the future.", Project.MSG_WARN);
+    }
+
+    protected DiffOutputControl getDiffOutputControl() {
+        DiffOutputControl diffOutputControl = new DiffOutputControl(includeCatalog, includeSchema, includeTablespace, null);
+
+        if (excludeObjects != null && includeObjects != null) {
+            throw new UnexpectedLiquibaseException("Cannot specify both excludeObjects and includeObjects");
+        }
+        if (excludeObjects != null) {
+            diffOutputControl.setObjectChangeFilter(new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.EXCLUDE, excludeObjects));
+        }
+        if (includeObjects != null) {
+            diffOutputControl.setObjectChangeFilter(new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.INCLUDE, includeObjects));
+        }
+
+        return diffOutputControl;
+    }
+
+    public boolean getIncludeCatalog() {
+        return includeCatalog;
+    }
+
+    public void setIncludeCatalog(boolean includeCatalog) {
+        this.includeCatalog = includeCatalog;
+    }
+
+    public boolean getIncludeSchema() {
+        return includeSchema;
+    }
+
+    public void setIncludeSchema(boolean includeSchema) {
+        this.includeSchema = includeSchema;
+    }
+
+    public boolean getIncludeTablespace() {
+        return includeTablespace;
+    }
+
+    public void setIncludeTablespace(boolean includeTablespace) {
+        this.includeTablespace = includeTablespace;
+    }
+
+    public String getIncludeObjects() {
+        return includeObjects;
+    }
+
+    public void setIncludeObjects(String includeObjects) {
+        this.includeObjects = includeObjects;
+    }
+
+    public String getExcludeObjects() {
+        return excludeObjects;
+    }
+
+    public void setExcludeObjects(String excludeObjects) {
+        this.excludeObjects = excludeObjects;
     }
 }

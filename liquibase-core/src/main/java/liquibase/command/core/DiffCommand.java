@@ -9,6 +9,7 @@ import liquibase.database.ObjectQuotingStrategy;
 import liquibase.diff.DiffGeneratorFactory;
 import liquibase.diff.DiffResult;
 import liquibase.diff.compare.CompareControl;
+import liquibase.diff.output.DiffOutputControl;
 import liquibase.diff.output.report.DiffToReport;
 import liquibase.exception.DatabaseException;
 import liquibase.snapshot.*;
@@ -29,6 +30,7 @@ public class DiffCommand extends AbstractCommand<CommandResult> {
     private SnapshotControl referenceSnapshotControl;
     private SnapshotControl targetSnapshotControl;
     private CompareControl compareControl;
+    private DiffOutputControl diffOutputControl;
 
 
     @Override
@@ -125,6 +127,15 @@ public class DiffCommand extends AbstractCommand<CommandResult> {
 
     public DiffCommand setCompareControl(CompareControl compareControl) {
         this.compareControl = compareControl;
+        return this;
+    }
+
+    public DiffOutputControl getDiffOutputControl() {
+        return diffOutputControl;
+    }
+
+    public DiffCommand setDiffOutputControl(DiffOutputControl diffOutputControl) {
+        this.diffOutputControl = diffOutputControl;
         return this;
     }
 

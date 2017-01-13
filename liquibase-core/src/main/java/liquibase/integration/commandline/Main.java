@@ -992,7 +992,7 @@ public class Main {
             }
 
             if ("diff".equalsIgnoreCase(command)) {
-                CommandLineUtils.doDiff(createReferenceDatabaseFromCommandParams(commandParams, fileOpener), database, StringUtils.trimToNull(diffTypes), finalSchemaComparisons);
+                CommandLineUtils.doDiff(createReferenceDatabaseFromCommandParams(commandParams, fileOpener), database, diffOutputControl, StringUtils.trimToNull(diffTypes), finalSchemaComparisons);
                 return;
             } else if ("diffChangeLog".equalsIgnoreCase(command)) {
                 CommandLineUtils.doDiffToChangeLog(changeLogFile, createReferenceDatabaseFromCommandParams(commandParams, fileOpener), database, diffOutputControl, StringUtils.trimToNull(diffTypes), finalSchemaComparisons);

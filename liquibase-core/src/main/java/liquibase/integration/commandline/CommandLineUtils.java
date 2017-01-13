@@ -181,11 +181,11 @@ boolean sql2005OrLater = true;
         }
     }
 
-    public static void doDiff(Database referenceDatabase, Database targetDatabase, String snapshotTypes) throws LiquibaseException {
-        doDiff(referenceDatabase, targetDatabase, snapshotTypes, null);
+    public static void doDiff(Database referenceDatabase, Database targetDatabase, DiffOutputControl diffOutputControl, String snapshotTypes) throws LiquibaseException {
+        doDiff(referenceDatabase, targetDatabase, diffOutputControl, snapshotTypes, null);
     }
 
-    public static void doDiff(Database referenceDatabase, Database targetDatabase, String snapshotTypes, CompareControl.SchemaComparison[] schemaComparisons) throws LiquibaseException {
+    public static void doDiff(Database referenceDatabase, Database targetDatabase, DiffOutputControl diffOutputControl, String snapshotTypes, CompareControl.SchemaComparison[] schemaComparisons) throws LiquibaseException {
         DiffCommand diffCommand = (DiffCommand) CommandFactory.getInstance().getCommand("diff");
 
         diffCommand
@@ -193,7 +193,8 @@ boolean sql2005OrLater = true;
                 .setTargetDatabase(targetDatabase)
                 .setCompareControl(new CompareControl(schemaComparisons, snapshotTypes))
                 .setSnapshotTypes(snapshotTypes)
-                .setOutputStream(System.out);
+                .setOutputStream(System.out)
+                .setDiffOutputControl(diffOutputControl);
 
         System.out.println("");
         System.out.println("Diff Results:");

@@ -1,6 +1,7 @@
 package liquibase.integration.ant;
 
 import liquibase.diff.DiffResult;
+import liquibase.diff.output.DiffOutputControl;
 import liquibase.diff.output.report.DiffToReport;
 import liquibase.exception.DatabaseException;
 import org.apache.tools.ant.BuildException;
@@ -22,6 +23,7 @@ public class DiffDatabaseTask extends AbstractDatabaseDiffTask {
         try {
             printStream = new PrintStream(outputFile.getOutputStream(), true, getOutputEncoding());
             DiffResult diffResult = getDiffResult();
+            DiffOutputControl diffOutputControl = getDiffOutputControl();
             DiffToReport diffReport = new DiffToReport(diffResult, printStream);
             log("Writing diff report " + outputFile.toString(), Project.MSG_INFO);
             diffReport.print();

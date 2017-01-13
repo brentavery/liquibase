@@ -27,11 +27,6 @@ import java.util.Set;
 
 public class DiffDatabaseToChangeLogTask extends AbstractDatabaseDiffTask {
     private Set<ChangeLogOutputFile> changeLogOutputFiles = new LinkedHashSet<ChangeLogOutputFile>();
-    private boolean includeSchema = true;
-    private boolean includeCatalog = true;
-    private boolean includeTablespace = true;
-    private String includeObjects;
-    private String excludeObjects;
 
     @Override
     protected void executeWithLiquibaseClassloader() throws BuildException {
@@ -74,22 +69,6 @@ public class DiffDatabaseToChangeLogTask extends AbstractDatabaseDiffTask {
         return (encoding == null) ? getDefaultOutputEncoding() : encoding;
     }
 
-    private DiffOutputControl getDiffOutputControl() {
-        DiffOutputControl diffOutputControl = new DiffOutputControl(includeCatalog, includeSchema, includeTablespace, null);
-
-        if (excludeObjects != null && includeObjects != null) {
-            throw new UnexpectedLiquibaseException("Cannot specify both excludeObjects and includeObjects");
-        }
-        if (excludeObjects != null) {
-            diffOutputControl.setObjectChangeFilter(new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.EXCLUDE, excludeObjects));
-        }
-        if (includeObjects != null) {
-            diffOutputControl.setObjectChangeFilter(new StandardObjectChangeFilter(StandardObjectChangeFilter.FilterType.INCLUDE, includeObjects));
-        }
-
-        return diffOutputControl;
-    }
-
     public void addConfiguredJson(ChangeLogOutputFile changeLogOutputFile) {
         changeLogOutputFile.setChangeLogSerializer(new JsonChangeLogSerializer());
         changeLogOutputFiles.add(changeLogOutputFile);
@@ -108,46 +87,6 @@ public class DiffDatabaseToChangeLogTask extends AbstractDatabaseDiffTask {
     public void addConfiguredTxt(ChangeLogOutputFile changeLogOutputFile) {
         changeLogOutputFile.setChangeLogSerializer(new StringChangeLogSerializer());
         changeLogOutputFiles.add(changeLogOutputFile);
-    }
-
-    public boolean getIncludeCatalog() {
-        return includeCatalog;
-    }
-
-    public void setIncludeCatalog(boolean includeCatalog) {
-        this.includeCatalog = includeCatalog;
-    }
-
-    public boolean getIncludeSchema() {
-        return includeSchema;
-    }
-
-    public void setIncludeSchema(boolean includeSchema) {
-        this.includeSchema = includeSchema;
-    }
-
-    public boolean getIncludeTablespace() {
-        return includeTablespace;
-    }
-
-    public void setIncludeTablespace(boolean includeTablespace) {
-        this.includeTablespace = includeTablespace;
-    }
-
-    public String getIncludeObjects() {
-        return includeObjects;
-    }
-
-    public void setIncludeObjects(String includeObjects) {
-        this.includeObjects = includeObjects;
-    }
-
-    public String getExcludeObjects() {
-        return excludeObjects;
-    }
-
-    public void setExcludeObjects(String excludeObjects) {
-        this.excludeObjects = excludeObjects;
     }
 
     /**
